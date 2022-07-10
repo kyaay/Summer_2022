@@ -1,15 +1,13 @@
-import 'package:activity1/models/api_response.dart';
-import 'package:activity1/services/notes_service.dart';
+import 'package:activity1/models/note_for_listing.dart';
 import 'package:activity1/views/note_delete.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../models/note_for_listing.dart';
+import '../models/api_response.dart';
+import '../services/notes_service.dart';
 import 'note_modify.dart';
 
 class NoteList extends StatefulWidget {
-  const NoteList({Key? key}) : super(key: key);
-
   @override
   _NoteListState createState() => _NoteListState();
 }
@@ -17,7 +15,7 @@ class NoteList extends StatefulWidget {
 class _NoteListState extends State<NoteList> {
   NotesService get service => GetIt.I<NotesService>();
 
-  late APIResponse<List<NoteForListing>> _apiResponse;
+  APIResponse<List<NoteForListing>> _apiResponse;
   bool _isLoading = false;
 
   String formatDateTime(DateTime dateTime) {
@@ -45,20 +43,18 @@ class _NoteListState extends State<NoteList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('List of notes')),
+        appBar: AppBar(title: Text('List of notes')),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => NoteModify(
-                      noteID: '',
-                    )));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => NoteModify()));
           },
-          child: const Icon(Icons.add),
+          child: Icon(Icons.add),
         ),
         body: Builder(
           builder: (_) {
             if (_isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             }
 
             if (_apiResponse.error) {
@@ -67,7 +63,7 @@ class _NoteListState extends State<NoteList> {
 
             return ListView.separated(
               separatorBuilder: (_, __) =>
-                  const Divider(height: 1, color: Colors.green),
+                  Divider(height: 1, color: Colors.green),
               itemBuilder: (_, index) {
                 return Dismissible(
                   key: ValueKey(_apiResponse.data[index].noteID),
@@ -81,10 +77,10 @@ class _NoteListState extends State<NoteList> {
                   },
                   background: Container(
                     color: Colors.red,
-                    padding: const EdgeInsets.only(left: 16),
-                    child: const Align(
-                      alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 16),
+                    child: Align(
                       child: Icon(Icons.delete, color: Colors.white),
+                      alignment: Alignment.centerLeft,
                     ),
                   ),
                   child: ListTile(
@@ -93,7 +89,7 @@ class _NoteListState extends State<NoteList> {
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
                     subtitle: Text(
-                        'Last edited on ${formatDateTime(_apiResponse.data[index].latestEditDateTime)}'),
+                        'Last edited on ${formatDateTime(_apiResponse.data[index].latestEditDateTime ?? _apiResponse.data[index].createDateTime)}'),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => NoteModify(

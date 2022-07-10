@@ -1,12 +1,12 @@
-import 'package:activity1/models/note.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import '../models/note.dart';
 import '../services/notes_service.dart';
 
 class NoteModify extends StatefulWidget {
   final String noteID;
-  NoteModify({required this.noteID});
+  NoteModify({this.noteID});
 
   @override
   _NoteModifyState createState() => _NoteModifyState();
@@ -17,8 +17,8 @@ class _NoteModifyState extends State<NoteModify> {
 
   NotesService get notesService => GetIt.I<NotesService>();
 
-  late String errorMessage;
-  late Note note;
+  String errorMessage;
+  Note note;
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
@@ -38,7 +38,7 @@ class _NoteModifyState extends State<NoteModify> {
       });
 
       if (response.error) {
-        errorMessage = response.errorMessage;
+        errorMessage = response.errorMessage ?? 'An error occurred';
       }
       note = response.data;
       _titleController.text = note.noteTitle;
