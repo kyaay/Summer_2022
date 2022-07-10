@@ -1,14 +1,50 @@
-// ignore_for_file: deprecated_member_use
-
+import 'package:activity1/models/note.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
-class NoteModify extends StatelessWidget {
+import '../services/notes_service.dart';
+
+class NoteModify extends StatefulWidget {
   final String noteID;
-  // ignore: unnecessary_null_comparison
-  bool get isEditing => noteID != null;
+  NoteModify({required this.noteID});
 
-  // ignore: prefer_const_constructors_in_immutables
-  NoteModify({Key? key, required this.noteID}) : super(key: key);
+  @override
+  _NoteModifyState createState() => _NoteModifyState();
+}
+
+class _NoteModifyState extends State<NoteModify> {
+  bool get isEditing => widget.noteID != null;
+
+  NotesService get notesService => GetIt.I<NotesService>();
+
+  late String errorMessage;
+  late Note note;
+
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _contentController = TextEditingController();
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      _isLoading = true;
+    });
+    notesService.getNote(widget.noteID).then((response) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.error) {
+        errorMessage = response.errorMessage;
+      }
+      note = response.data;
+      _titleController.text = note.noteTitle;
+      _contentController.text = note.noteContent;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,30 +52,34 @@ class NoteModify extends StatelessWidget {
       appBar: AppBar(title: Text(isEditing ? 'Edit note' : 'Create note')),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: <Widget>[
-            const TextField(
-              decoration: InputDecoration(hintText: 'Note title'),
-            ),
-            Container(height: 8),
-            const TextField(
-              decoration: InputDecoration(hintText: 'Note content'),
-            ),
-            Container(height: 16),
-            SizedBox(
-              width: double.infinity,
-              height: 35,
-              child: RaisedButton(
-                color: Theme.of(context).primaryColor,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child:
-                    const Text('Submit', style: TextStyle(color: Colors.white)),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(hintText: 'Note title'),
+                  ),
+                  Container(height: 8),
+                  TextField(
+                    controller: _contentController,
+                    decoration: InputDecoration(hintText: 'Note content'),
+                  ),
+                  Container(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 35,
+                    child: RaisedButton(
+                      child:
+                          Text('Submit', style: TextStyle(color: Colors.white)),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
       ),
     );
   }

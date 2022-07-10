@@ -1,10 +1,10 @@
 import 'package:activity1/models/api_response.dart';
-import 'package:activity1/models/note_for_listing.dart';
+import 'package:activity1/services/notes_service.dart';
 import 'package:activity1/views/note_delete.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../services/notes_service.dart';
+import '../models/note_for_listing.dart';
 import 'note_modify.dart';
 
 class NoteList extends StatefulWidget {
@@ -45,7 +45,7 @@ class _NoteListState extends State<NoteList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('List of notes')),
+        appBar: AppBar(title: const Text('List of notes')),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -53,12 +53,12 @@ class _NoteListState extends State<NoteList> {
                       noteID: '',
                     )));
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         body: Builder(
           builder: (_) {
             if (_isLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (_apiResponse.error) {
@@ -67,7 +67,7 @@ class _NoteListState extends State<NoteList> {
 
             return ListView.separated(
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: Colors.green),
+                  const Divider(height: 1, color: Colors.green),
               itemBuilder: (_, index) {
                 return Dismissible(
                   key: ValueKey(_apiResponse.data[index].noteID),
@@ -81,10 +81,10 @@ class _NoteListState extends State<NoteList> {
                   },
                   background: Container(
                     color: Colors.red,
-                    padding: EdgeInsets.only(left: 16),
-                    child: Align(
-                      child: Icon(Icons.delete, color: Colors.white),
+                    padding: const EdgeInsets.only(left: 16),
+                    child: const Align(
                       alignment: Alignment.centerLeft,
+                      child: Icon(Icons.delete, color: Colors.white),
                     ),
                   ),
                   child: ListTile(
