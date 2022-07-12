@@ -1,6 +1,6 @@
+import 'package:midterm_app/models/cart_update.dart';
 import 'package:midterm_app/models/product.dart';
 import 'package:http/http.dart' as http;
-import 'package:midterm_app/models/product1.dart';
 import 'package:midterm_app/models/cart.dart';
 import 'dart:convert';
 
@@ -90,5 +90,34 @@ class ApiService {
       }
       return categories;
     }).catchError((error) => print(error));
+  }
+
+  Future<void> deleteCart(String id) async {
+    return http
+        .delete(Uri.parse('$baseUrl/carts/$id'), headers: headers)
+        .then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        print(data.statusCode);
+        print(jsonData);
+      }
+    }).catchError((err) => print(err));
+  }
+
+  Future<void> updateCart(int cartId, int productId) {
+    final cartUpdate =
+        CartUpdate(userId: cartId, date: DateTime.now(), products: [
+      {'productId': productId, 'quantity': 1}
+    ]);
+    return http
+        .put(Uri.parse('$baseUrl/carts/$cartId'),
+            headers: headers, body: json.encode(cartUpdate.toJson()))
+        .then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        print(data.statusCode);
+        print(jsonData);
+      }
+    }).catchError((err) => print(err));
   }
 }
