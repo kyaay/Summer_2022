@@ -7,8 +7,8 @@ import '../models/api_response.dart';
 import '../models/note.dart';
 
 class NotesService {
-  static const API = 'http://api.notes.programmingaddict.com';
-  static const headers = {'apiKey': '08d771e2-7c49-1789-0eaa-32aff09f1471'};
+  static const API = 'https://tq-notes-api-jkrgrdggbq-el.a.run.app';
+  static const headers = {'apiKey': '3a85a174-267a-4450-9527-b50d4cfeeedc'};
 
   Future<APIResponse<List<NoteForListing>>> getNotesList() {
     return http.get('$API/notes', headers: headers).then((data) {

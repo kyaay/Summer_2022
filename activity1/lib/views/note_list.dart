@@ -8,6 +8,8 @@ import '../services/notes_service.dart';
 import 'note_modify.dart';
 
 class NoteList extends StatefulWidget {
+  const NoteList({Key key}) : super(key: key);
+
   @override
   _NoteListState createState() => _NoteListState();
 }
@@ -43,18 +45,18 @@ class _NoteListState extends State<NoteList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('List of notes')),
+        appBar: AppBar(title: const Text('List of notes')),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => NoteModify()));
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         body: Builder(
           builder: (_) {
             if (_isLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (_apiResponse.error) {
@@ -63,7 +65,7 @@ class _NoteListState extends State<NoteList> {
 
             return ListView.separated(
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: Colors.green),
+                  const Divider(height: 1, color: Colors.green),
               itemBuilder: (_, index) {
                 return Dismissible(
                   key: ValueKey(_apiResponse.data[index].noteID),
@@ -77,10 +79,10 @@ class _NoteListState extends State<NoteList> {
                   },
                   background: Container(
                     color: Colors.red,
-                    padding: EdgeInsets.only(left: 16),
-                    child: Align(
-                      child: Icon(Icons.delete, color: Colors.white),
+                    padding: const EdgeInsets.only(left: 16),
+                    child: const Align(
                       alignment: Alignment.centerLeft,
+                      child: Icon(Icons.delete, color: Colors.white),
                     ),
                   ),
                   child: ListTile(
