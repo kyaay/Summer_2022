@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
 
                   print(getToken);
 
-                  if (getToken != null && getToken['token'] != null) {
+                  if (getToken != null /*&& getToken['token'] != null*/) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Successfully logged in'),

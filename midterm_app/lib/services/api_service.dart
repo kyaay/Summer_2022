@@ -1,5 +1,7 @@
 import 'package:midterm_app/models/product.dart';
 import 'package:http/http.dart' as http;
+import 'package:midterm_app/models/product1.dart';
+import 'package:midterm_app/models/cart.dart';
 import 'dart:convert';
 
 import '../models/cart.dart';
@@ -15,5 +17,78 @@ class ApiService {
     };
     final response = await http.post(Uri.parse(baseUrl), body: body);
     return response.body;
+  }
+
+  Future<List<Product>> getAllProducts() async {
+    return http
+        .get(Uri.parse('$baseUrl/products'), headers: headers)
+        .then((data) {
+      final products = <Product>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        for (var product in jsonData) {
+          products.add(Product.fromJson(product));
+        }
+      }
+      return products;
+    }).catchError((error) => print(error));
+  }
+
+  Future<Product> getProduct(int id) async {
+    return http
+        .get(Uri.parse('$baseUrl/products/$id'), headers: headers)
+        .then((data) {
+      Product product = Product();
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        product = Product.fromJson(jsonData);
+      }
+      return product;
+    }).catchError((err) => print(err));
+  }
+
+  Future<Cart?> getCart(String userId) async {
+    return http
+        .get(Uri.parse('$baseUrl/carts/$userId'), headers: headers)
+        .then((data) {
+      Cart cart = Cart();
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        cart = Cart.fromJson(jsonData);
+      }
+      return cart;
+    }).catchError((err) => print(err));
+  }
+
+  Future<List<Product>> getProductsByCategory(String categoryName) async {
+    return http
+        .get(Uri.parse('$baseUrl/products/category/$categoryName'),
+            headers: headers)
+        .then((data) {
+      final products = <Product>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        for (var item in jsonData) {
+          if (item['category'] == categoryName) {
+            products.add(Product.fromJson(item));
+          }
+        }
+      }
+      return products;
+    });
+  }
+
+  Future<List<String>> getAllCategories() {
+    return http.get(Uri.parse('$baseUrl/products/categories')).then((data) {
+      final categories = <String>[];
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+
+        for (var item in jsonData) {
+          categories.add(item);
+        }
+      }
+      return categories;
+    }).catchError((error) => print(error));
   }
 }
