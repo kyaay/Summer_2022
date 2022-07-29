@@ -1,18 +1,18 @@
 class CartUpdate {
-  int userId;
-  DateTime date;
-  List<dynamic> products;
+  int? userId;
+  DateTime? date;
+  List<dynamic>? products;
 
   CartUpdate({
-    required this.userId,
-    required this.date,
-    required this.products,
+    this.userId,
+    this.date,
+    this.products,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "userId": userId,
-      "date": date == null ? null : date.toIso8601String(),
+      "date": date == null ? null : date!.toIso8601String(),
       "products": products,
     };
   }
